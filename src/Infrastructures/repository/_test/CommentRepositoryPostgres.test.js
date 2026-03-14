@@ -159,4 +159,39 @@ describe('CommentRepositoryPostgres', () => {
         .resolves.not.toThrowError(AuthorizationError);
     });
   });
+
+  describe('getCommentsByThreadId function', () => {
+    it('should return comments in ascending order by date', async () => {
+      await UsersTableTestHelper.addUser({ id: 'user-234', username: 'alex' });
+      await CommentsTableTestHelper.addComment({
+        id: 'comment-1',
+        threadId: 'thread-123',
+        owner: 'user-123',
+        content: 'komentar 1',
+        date: new Date('2026-03-14T16:39:20.555Z'),
+        isDelete: true,
+      });
+      await CommentsTableTestHelper.addComment({
+        id: 'comment-2',
+        threadId: 'thread-123',
+        owner: 'user-234',
+        content: 'komentar 2',
+        date: new Date('2026-03-14T16:40:20.555Z'),
+      });
+
+      const commentRepository = new CommentRepositoryPostgres(pool, {});
+
+      const comments = await commentRepository.getCommentsByThreadId('thread-123');
+
+      expect(comments).toHaveLength(2);
+      expect(comments[0].id).toEqual('comment-1');
+      expect(comments[0].username).toEqual('dicoding');
+      expect(comments[0].content).toEqual('**komentar telah dihapus**');
+      expect(comments[0].date).toEqual('2026-03-14T16:39:20.555Z');
+      expect(comments[1].id).toEqual('comment-2');
+      expect(comments[1].username).toEqual('alex');
+      expect(comments[1].date).toEqual('2026-03-14T16:40:20.555Z');
+      expect(comments[1].content).toEqual('komentar 2');
+    });
+  });
 });

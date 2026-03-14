@@ -2,6 +2,7 @@ import AuthorizationError from '../../Commons/exceptions/AuthorizationError.js';
 import NotFoundError from '../../Commons/exceptions/NotFoundError.js';
 import CommentRepository from '../../Domains/comments/CommentRepository.js';
 import AddedComment from '../../Domains/comments/entities/AddedComment.js';
+import DetailComment from '../../Domains/comments/entities/DetailComment.js';
 
 class CommentRepositoryPostgres extends CommentRepository {
   constructor(pool, idGenerator) {
@@ -73,6 +74,28 @@ class CommentRepositoryPostgres extends CommentRepository {
     if (comment.owner !== userId) {
       throw new AuthorizationError('Anda tidak berhak mengakses resource ini');
     }
+  }
+
+  async getCommentsByThreadId(threadId) {
+    const query = {
+      text: `
+        SELECT c.id, c.content, c.date, c.is_delete AS "isDelete", u.username 
+        FROM comments c 
+        LEFT JOIN users u ON u.id = c.owner 
+        WHERE c.thread_id = $1 
+        ORDER BY c.date ASC
+      `,
+      values: [threadId]
+    };
+
+    const results = await this._pool.query(query);
+    return results.rows.map((row) => new DetailComment({
+      id: row.id,
+      username: row.username,
+      date: new Date(row.date).toISOString(),
+      content: row.content,
+      isDelete: row.isDelete,
+    }));
   }
 }
 

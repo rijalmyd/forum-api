@@ -6,6 +6,7 @@ import pool from '../../database/postgres/pool.js';
 import createServer from '../createServer.js';
 import request from 'supertest';
 import ServerTestHelper from '../../../../tests/ServerTestHelper.js';
+import CommentsTableTestHelper from '../../../../tests/CommentsTableTestHelper.js';
 
 describe('/threads endpoint', () => {
   afterAll(async () => {
@@ -84,6 +85,67 @@ describe('/threads endpoint', () => {
       expect(response.status).toEqual(201);
       expect(response.body.status).toEqual('success');
       expect(response.body.data.addedThread).toBeDefined();
+    });
+  });
+
+  describe('when GET /threads/:threadId', () => {
+    it('should response 404 when thread not found', async () => {
+      const app = await createServer(container);
+
+      const response = await request(app)
+        .get('/threads/thread-123');
+
+      expect(response.status).toEqual(404);
+      expect(response.body.status).toEqual('fail');
+    });
+
+    it('should response 200 and show deleted comment with placeholder content', async () => {
+      const app = await createServer(container);
+
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: 'dicoding' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', owner: 'user-123', isDelete: true });
+
+      const response = await request(app)
+        .get('/threads/thread-123');
+
+      console.log(response.body);
+
+      expect(response.status).toEqual(200);
+      expect(response.body.data.thread.id).toEqual('thread-123');
+      expect(response.body.data.thread.username).toEqual('dicoding');
+      expect(response.body.data.thread.comments).toHaveLength(1);
+      expect(response.body.data.thread.comments[0].id).toEqual('comment-123');
+      expect(response.body.data.thread.comments[0].username).toEqual('dicoding');
+      expect(response.body.data.thread.comments[0].content).toEqual('**komentar telah dihapus**');
+    });
+
+    it('should response 200, comments sorted ascending and show deleted comment with placeholder content', async () => {
+      const app = await createServer(container);
+
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: 'dicoding' });
+      await UsersTableTestHelper.addUser({ id: 'user-000', username: 'commentator' });
+
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', owner: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-234', threadId: 'thread-123', owner: 'user-000', isDelete: true });
+
+      const response = await request(app)
+        .get('/threads/thread-123');
+
+      console.log(response.body);
+
+      expect(response.status).toEqual(200);
+      expect(response.body.data.thread.id).toEqual('thread-123');
+      expect(response.body.data.thread.username).toEqual('dicoding');
+      expect(response.body.data.thread.comments).toHaveLength(2);
+      expect(response.body.data.thread.comments[0].id).toEqual('comment-123');
+      expect(response.body.data.thread.comments[0].username).toEqual('dicoding');
+      expect(response.body.data.thread.comments[0].content).toEqual('sebuah komentar');
+      expect(response.body.data.thread.comments[1].id).toEqual('comment-234');
+      expect(response.body.data.thread.comments[1].username).toEqual('commentator');
+      expect(response.body.data.thread.comments[1].content).toEqual('**komentar telah dihapus**');
     });
   });
 });
