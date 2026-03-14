@@ -31,7 +31,7 @@ describe('AddThreadUseCase', () => {
       title: 'sebuah thread',
       owner: 'user-123'
     }));
-    expect(mockThreadRepository.addThread).toBeCalledWith(new NewThread({
+    expect(mockThreadRepository.addThread).toHaveBeenCalledWith(new NewThread({
       title: 'sebuah thread',
       body: 'sebuah body thread',
       owner: 'user-123'

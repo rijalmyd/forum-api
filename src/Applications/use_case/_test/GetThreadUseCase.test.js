@@ -1,4 +1,4 @@
-import { vi } from 'vitest';
+import { expect, vi } from 'vitest';
 import CommentRepository from '../../../Domains/comments/CommentRepository.js';
 import ThreadRepository from '../../../Domains/threads/ThreadRepository.js';
 import DetailComment from '../../../Domains/comments/entities/DetailComment.js';
@@ -47,6 +47,7 @@ describe('GetThreadUseCase', () => {
     const thread = await getThreadUseCase.execute(useCasePayload);
 
     expect(mockThreadRepository.getThreadById).toHaveBeenCalledWith(useCasePayload.threadId);
+    expect(mockThreadRepository.verifyThreadExists).toHaveBeenCalledWith(useCasePayload.threadId);
     expect(mockCommentRepository.getCommentsByThreadId).toHaveBeenCalledWith(useCasePayload.threadId);
 
     expect(thread.date).toEqual(thread.date);

@@ -33,12 +33,12 @@ describe('AddCommentUseCase', () => {
 
     expect(mockCommentRepository.addComment).toBeCalledTimes(1);
     expect(mockThreadRepository.verifyThreadExists).toBeCalledTimes(1);
-    expect(mockCommentRepository.addComment).toBeCalledWith(new NewComment({
+    expect(mockCommentRepository.addComment).toHaveBeenCalledWith(new NewComment({
       content: 'sebuah komentar',
       threadId: 'thread-123',
       owner: 'user-123'
     }));
-    expect(mockThreadRepository.verifyThreadExists).toBeCalledWith(threadId);
+    expect(mockThreadRepository.verifyThreadExists).toHaveBeenCalledWith(threadId);
     expect(actualResult).toEqual(new AddedComment({
       id: 'comment-123',
       content: 'sebuah komentar',

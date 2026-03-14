@@ -29,12 +29,12 @@ describe('DeleteCommentUseCase', () => {
     await deleteCommentUseCase.execute('user-123', useCaseParams);
 
     expect(mockCommentRepository.verifyCommentOwner)
-      .toBeCalledWith('comment-123', 'user-123');
+      .toHaveBeenCalledWith('comment-123', 'user-123');
     expect(mockCommentRepository.verifyCommentId)
-      .toBeCalledWith('comment-123', 'thread-123');
+      .toHaveBeenCalledWith('comment-123', 'thread-123');
     expect(mockThreadRepository.verifyThreadExists)
-      .toBeCalledWith('thread-123');
+      .toHaveBeenCalledWith('thread-123');
     expect(mockCommentRepository.deleteCommentById)
-      .toBeCalledWith('comment-123');
+      .toHaveBeenCalledWith('comment-123');
   });
 });
