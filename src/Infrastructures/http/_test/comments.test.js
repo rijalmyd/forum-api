@@ -123,6 +123,19 @@ describe('/threads/:threadId/comments endpoint', () => {
   });
 
   describe('when DELETE /threads/:threadId/comments/:commentId', () => {
+    it('should response 401 when unauthorized', async () => {
+      const app = await createServer(container);
+      await UsersTableTestHelper.addUser({});
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', owner: 'user-123', threadId: 'thread-123' });
+
+      const response = await request(app)
+        .delete('/threads/thread-123/comments/comment-123');
+
+      expect(response.statusCode).toEqual(401);
+      expect(response.body.status).toEqual('fail');
+    });
+
     it('should response 403 when user is not owner', async () => {
       const app = await createServer(container);
       await UsersTableTestHelper.addUser({});
@@ -139,7 +152,7 @@ describe('/threads/:threadId/comments endpoint', () => {
       expect(response.body.status).toEqual('fail');
     });
 
-    it('should response 404 when commentId is not available', async () => {
+    it('should response 404 when comment not available', async () => {
       const app = await createServer(container);
       const accessToken = await ServerTestHelper.getAccessToken({});
       await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
@@ -152,7 +165,7 @@ describe('/threads/:threadId/comments endpoint', () => {
       expect(response.body.status).toEqual('fail');
     });
 
-    it('should response 404 when threadId is not available', async () => {
+    it('should response 404 when thread not available', async () => {
       const app = await createServer(container);
       const accessToken = await ServerTestHelper.getAccessToken({});
       await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
@@ -170,7 +183,7 @@ describe('/threads/:threadId/comments endpoint', () => {
       expect(response.body.status).toEqual('fail');
     });
 
-    it('should response 404 when threadId and commentId is not available', async () => {
+    it('should response 404 when thread and comment not available', async () => {
       const app = await createServer(container);
       const accessToken = await ServerTestHelper.getAccessToken({});
 
