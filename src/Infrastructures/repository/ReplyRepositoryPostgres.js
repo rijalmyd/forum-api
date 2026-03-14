@@ -52,10 +52,6 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     if (result.rows[0].is_delete) {
       throw new NotFoundError('balasan telah dihapus');
     }
-
-    if (result.rows[0].comment_id !== commentId) {
-      throw new NotFoundError('balasan tidak ditemukan');
-    }
   }
 
   async verifyReplyOwner(replyId, userId) {

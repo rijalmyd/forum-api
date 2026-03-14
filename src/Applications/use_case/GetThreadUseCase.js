@@ -12,12 +12,22 @@ class GetThreadUseCase {
   async execute(useCasePayload) {
     const { threadId } = useCasePayload;
     await this._threadRepository.verifyThreadExists(threadId);
-
     const thread = await this._threadRepository.getThreadById(threadId);
-    const comments = await this._commentRepository.getCommentsByThreadId(threadId);
 
-    const replies = await this._getReplies(comments);
-    const repliesByCommentId = this._groupRepliesByCommentId(replies);
+    const comments = await this._commentRepository.getCommentsByThreadId(threadId);
+    const commentIds = comments.map((comment) => comment.id);
+
+    const replies = commentIds.length ? await this._replyRepository.getRepliesByCommentIds(commentIds) : [];
+    const repliesByCommentId = replies.reduce((acc, reply) => {
+      acc[reply.commentId] = acc[reply.commentId] || [];
+      acc[reply.commentId].push({
+        id: reply.id,
+        content: reply.content,
+        date: reply.date,
+        username: reply.username,
+      });
+      return acc;
+    }, {});
 
     const mappedComments = comments.map((comment) => ({
       id: comment.id,
@@ -29,29 +39,8 @@ class GetThreadUseCase {
 
     return {
       ...thread,
-      comments: mappedComments,
+      comments: mappedComments
     };
-  }
-
-  async _getReplies(comments) {
-    const commentIds = comments.map((comment) => comment.id);
-    if (!commentIds.length) return [];
-    return this._replyRepository.getRepliesByCommentIds(commentIds);
-  }
-
-  _groupRepliesByCommentId(replies) {
-    return replies.reduce((acc, reply) => {
-      if (!acc[reply.commentId]) acc[reply.commentId] = [];
-
-      acc[reply.commentId].push({
-        id: reply.id,
-        content: reply.content,
-        date: reply.date,
-        username: reply.username,
-      });
-
-      return acc;
-    }, {});
   }
 }
 

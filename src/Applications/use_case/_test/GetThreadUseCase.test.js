@@ -118,4 +118,34 @@ describe('GetThreadUseCase', () => {
 
     expect(thread.comments[0].replies[0].content).toEqual('**balasan telah dihapus**');
   });
+
+  it('should handle thread with no comments correctly', async () => {
+    const useCasePayload = { threadId: 'thread-123' };
+    const mockThreadRepository = new ThreadRepository();
+    const mockCommentRepository = new CommentRepository();
+    const mockReplyRepository = new ReplyRepository();
+
+    mockThreadRepository.verifyThreadExists = vi.fn().mockResolvedValue();
+    mockThreadRepository.getThreadById = vi.fn().mockResolvedValue({
+      id: 'thread-123',
+      title: 'Thread Kosong',
+      body: 'Body',
+      date: '2026-03-14T16:10:20.555Z',
+      username: 'dicoding',
+    });
+
+    mockCommentRepository.getCommentsByThreadId = vi.fn().mockResolvedValue([]);
+    mockReplyRepository.getRepliesByCommentIds = vi.fn();
+
+    const getThreadUseCase = new GetThreadUseCase({
+      threadRepository: mockThreadRepository,
+      commentRepository: mockCommentRepository,
+      replyRepository: mockReplyRepository,
+    });
+
+    const thread = await getThreadUseCase.execute(useCasePayload);
+
+    expect(thread.comments).toHaveLength(0);
+    expect(mockReplyRepository.getRepliesByCommentIds).not.toHaveBeenCalled();
+  });
 });

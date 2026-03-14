@@ -1,4 +1,3 @@
-import { expect, vi } from 'vitest';
 import CommentRepository from '../../../Domains/comments/CommentRepository.js';
 import ThreadRepository from '../../../Domains/threads/ThreadRepository.js';
 import DeleteCommentUseCase from '../DeleteCommentUseCase.js';

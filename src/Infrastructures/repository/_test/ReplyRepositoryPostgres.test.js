@@ -8,6 +8,7 @@ import ReplyRepositoryPostgres from '../ReplyRepositoryPostgres.js';
 import AddedReply from '../../../Domains/replies/entities/AddedReply.js';
 import NotFoundError from '../../../Commons/exceptions/NotFoundError.js';
 import AuthorizationError from '../../../Commons/exceptions/AuthorizationError.js';
+import { describe } from 'vitest';
 
 describe('ReplyRepositoryPostgres', () => {
   beforeEach(async () => {
@@ -95,6 +96,18 @@ describe('ReplyRepositoryPostgres', () => {
       await expect(replyRepositoryPostgres.verifyReplyId('reply-123', 'comment-123'))
         .rejects.toThrowError(NotFoundError);
     });
+
+    it('should throw NotFoundError when reply has been deleted', async () => {
+      await RepliesTableTestHelper.addReply({
+        id: 'reply-123',
+        owner: 'user-000',
+        isDelete: true
+      });
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+      await expect(replyRepositoryPostgres.verifyReplyId('reply-123', 'comment-123'))
+        .rejects.toThrowError(NotFoundError);
+    });
   });
 
   describe('verifyReplyOwner function', () => {
@@ -129,6 +142,30 @@ describe('ReplyRepositoryPostgres', () => {
 
       await expect(replyRepositoryPostgres.verifyReplyOwner('reply-123', 'user-000'))
         .resolves.not.toThrowError(AuthorizationError);
+    });
+  });
+
+  describe('getRepliesByCommentIds function', () => {
+    it('should return empty array when commentIds empty', async () => {
+      const replyRepository = new ReplyRepositoryPostgres(pool, {});
+
+      const replies = await replyRepository.getRepliesByCommentIds([]);
+      expect(replies).toEqual([]);
+    });
+
+    it('should return replies in ascending order by date', async () => {
+      await RepliesTableTestHelper.addReply({ id: 'reply-1', commentId: 'comment-123', owner: 'user-000', content: 'balasan 1', date: new Date('2026-03-14T07:10:11.222Z') });
+      await RepliesTableTestHelper.addReply({ id: 'reply-2', commentId: 'comment-123', owner: 'user-123', content: 'balasan 2', date: new Date('2026-03-14T08:10:01.555Z') });
+
+      const replyRepository = new ReplyRepositoryPostgres(pool, {});
+
+      const replies = await replyRepository.getRepliesByCommentIds(['comment-123']);
+
+      expect(replies).toHaveLength(2);
+      expect(replies[0].id).toEqual('reply-1');
+      expect(replies[0].username).toEqual('commentator');
+      expect(replies[1].id).toEqual('reply-2');
+      expect(replies[1].username).toEqual('dicoding');
     });
   });
 });

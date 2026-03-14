@@ -52,10 +52,6 @@ class CommentRepositoryPostgres extends CommentRepository {
     if (result.rows[0].is_delete) {
       throw new NotFoundError('komentar telah dihapus');
     }
-
-    if (result.rows[0].thread_id !== threadId) {
-      throw new NotFoundError('komentar tidak ditemukan');
-    }
   }
 
   async verifyCommentOwner(commentId, userId) {
