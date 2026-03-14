@@ -19,7 +19,7 @@ const authenticate = (container) => {
 
     return res.status(401).json({
       status: 'fail',
-      message: 'Unauthorized',
+      message: 'Missing authentication',
     });
   };
 };
