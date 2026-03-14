@@ -1,4 +1,3 @@
-import { expect, vi } from 'vitest';
 import CommentRepository from '../../../Domains/comments/CommentRepository.js';
 import ThreadRepository from '../../../Domains/threads/ThreadRepository.js';
 import DetailComment from '../../../Domains/comments/entities/DetailComment.js';
@@ -72,36 +71,51 @@ describe('GetThreadUseCase', () => {
     expect(thread.comments[1].content).toEqual('komentar 2');
   });
 
-  // it('should show deleted reply placeholder content', async () => {
-  //   const mockThreadRepository = new ThreadRepository();
-  //   mockThreadRepository.verifyThreadExists = vi.fn()
-  //     .mockImplementation(() => Promise.resolve());
-  //   mockThreadRepository.getThreadById = vi.fn()
-  //     .mockImplementation(() => Promise.resolve({
-  //       id: 'thread-123',
-  //       title: 'sebuah thread',
-  //       body: 'body',
-  //       date: '2021-08-08T07:19:09.775Z',
-  //       username: 'dicoding',
-  //     }));
+  it('should show deleted reply placeholder content', async () => {
+    const mockThreadRepository = new ThreadRepository();
+    const mockReplyRepository = new ReplyRepository();
+    const mockCommentRepository = new CommentRepository();
 
-  //   const mockCommentRepository = new CommentRepository();
-  //   mockCommentRepository.getCommentsByThreadId = vi.fn()
-  //     .mockImplementation(() => Promise.resolve(new DetailComment({
-  //       id: 'comment-1',
-  //       username: 'johndoe',
-  //       date: '2021-08-08T07:22:33.555Z',
-  //       content: 'komentar 1',
-  //       isDelete: false,
-  //     })));
+    mockThreadRepository.verifyThreadExists = vi.fn()
+      .mockImplementation(() => Promise.resolve());
+    mockThreadRepository.getThreadById = vi.fn()
+      .mockImplementation(() => Promise.resolve({
+        id: 'thread-123',
+        title: 'sebuah thread',
+        body: 'body',
+        date: '2021-08-08T07:19:09.775Z',
+        username: 'dicoding',
+      }));
+    mockReplyRepository.getRepliesByCommentIds = vi.fn()
+      .mockImplementation(() => Promise.resolve([
+        new DetailReply({
+          id: 'reply-1',
+          commentId: 'comment-1',
+          username: 'dicoding',
+          date: '2026-03-14T07:20:42.555Z',
+          content: 'balasan',
+          isDelete: true,
+        }),
+      ]));
+    mockCommentRepository.getCommentsByThreadId = vi.fn()
+      .mockImplementation(() => Promise.resolve([
+        new DetailComment({
+          id: 'comment-1',
+          username: 'johndoe',
+          date: '2021-08-08T07:22:33.555Z',
+          content: 'komentar 1',
+          isDelete: false,
+        })
+      ]));
 
-  //   const getThreadUseCase = new GetThreadUseCase({
-  //     commentRepository: mockCommentRepository,
-  //     threadRepository: mockThreadRepository,
-  //   });
+    const getThreadUseCase = new GetThreadUseCase({
+      commentRepository: mockCommentRepository,
+      threadRepository: mockThreadRepository,
+      replyRepository: mockReplyRepository,
+    });
 
-  //   const thread = await getThreadUseCase.execute('thread-123');
+    const thread = await getThreadUseCase.execute('thread-123');
 
-  //   expect(thread.comments[0].replies[0].content).toEqual('**balasan telah dihapus**');
-  // });
+    expect(thread.comments[0].replies[0].content).toEqual('**balasan telah dihapus**');
+  });
 });

@@ -1,4 +1,3 @@
-import { describe, expect } from 'vitest';
 import CommentsTableTestHelper from '../../../../tests/CommentsTableTestHelper.js';
 import RepliesTableTestHelper from '../../../../tests/RepliesTableTestHelper.js';
 import ThreadsTableTestHelper from '../../../../tests/ThreadsTableTestHelper.js';
@@ -69,6 +68,23 @@ describe('ReplyRepositoryPostgres', () => {
         content: 'sebuah balasan',
         owner: 'user-123'
       }));
+    });
+  });
+
+  describe('deleteReplyById function', () => {
+    it('should persist deleted reply', async () => {
+      await RepliesTableTestHelper.addReply({
+        id: 'reply-123',
+        commentId: 'comment-123',
+        owner: 'user-000'
+      });
+
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+      await replyRepositoryPostgres.deleteReplyById('reply-123');
+
+      const replies = await RepliesTableTestHelper.findRepliessById('reply-123');
+      expect(replies[0].is_delete).toEqual(true);
     });
   });
 

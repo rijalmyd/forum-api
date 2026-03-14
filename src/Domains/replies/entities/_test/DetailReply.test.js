@@ -1,4 +1,3 @@
-import { expect } from 'vitest';
 import DetailReply from '../DetailReply.js';
 
 describe('a DetailReply entities', () => {

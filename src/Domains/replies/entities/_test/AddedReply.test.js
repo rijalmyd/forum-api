@@ -1,4 +1,3 @@
-import { describe } from 'vitest';
 import AddedReply from '../AddedReply.js';
 
 describe('an AddedReply entities', () => {

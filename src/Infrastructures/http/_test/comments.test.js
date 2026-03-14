@@ -1,4 +1,3 @@
-import { expect } from 'vitest';
 import CommentsTableTestHelper from '../../../../tests/CommentsTableTestHelper.js';
 import ServerTestHelper from '../../../../tests/ServerTestHelper.js';
 import ThreadsTableTestHelper from '../../../../tests/ThreadsTableTestHelper.js';

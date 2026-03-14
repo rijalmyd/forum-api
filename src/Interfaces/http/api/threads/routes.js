@@ -4,8 +4,8 @@ import authenticate from '../../middlewares/auth.js';
 const routes = (handler, container) => {
   const router = Router();
 
-  router.post('/', authenticate(container), handler.postThreadHandler);
-  router.get('/:threadId', handler.getThreadHandler);
+  router.post('/threads/', authenticate(container), handler.postThreadHandler);
+  router.get('/threads/:threadId', handler.getThreadHandler);
 
   return router;
 };

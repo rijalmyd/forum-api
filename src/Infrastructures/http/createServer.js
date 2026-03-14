@@ -14,11 +14,11 @@ const createServer = async (container) => {
   app.use(express.json());
 
   // Register routes
-  app.use('/users', users(container));
-  app.use('/authentications', authentications(container));
-  app.use('/threads', threads(container));
-  app.use('/threads', comments(container));
-  app.use('/threads', replies(container));
+  app.use('/', users(container));
+  app.use('/', authentications(container));
+  app.use('/', threads(container));
+  app.use('/', comments(container));
+  app.use('/', replies(container));
 
   // Global error handler
   app.use((error, req, res, next) => { // eslint-disable-line no-unused-vars

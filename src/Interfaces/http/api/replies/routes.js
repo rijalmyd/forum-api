@@ -5,9 +5,14 @@ const routes = (handler, container) => {
   const router = Router();
 
   router.post(
-    '/:threadId/comments/:commentId/replies',
+    '/threads/:threadId/comments/:commentId/replies',
     authenticate(container),
     handler.postReplyHandler,
+  );
+  router.delete(
+    '/threads/:threadId/comments/:commentId/replies/:replyId',
+    authenticate(container),
+    handler.deleteReplyHandler,
   );
 
   return router;
