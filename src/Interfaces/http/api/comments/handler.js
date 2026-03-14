@@ -14,8 +14,9 @@ class CommentsHandler {
       const addCommentUseCase = this._container.getInstance(AddCommentUseCase.name);
       const { threadId } = req.params;
       const { id: owner } = req.user;
+      const { content } = req.body;
 
-      const addedComment = await addCommentUseCase.execute(req.body, threadId, owner);
+      const addedComment = await addCommentUseCase.execute({ content, threadId, owner });
 
       res.status(201).json({
         status: 'success',
@@ -34,7 +35,7 @@ class CommentsHandler {
       const { threadId, commentId } = req.params;
       const { id: userId } = req.user;
 
-      await deleteCommentUseCase.execute(userId, { threadId, commentId });
+      await deleteCommentUseCase.execute({ userId, threadId, commentId });
       res.status(200).json({
         status: 'success',
         message: 'Berhasil menghapus komentar'

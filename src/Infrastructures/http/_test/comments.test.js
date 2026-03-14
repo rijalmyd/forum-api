@@ -53,7 +53,7 @@ describe('/threads/:threadId/comments endpoint', () => {
       expect(response.body.message).toBeDefined();
     });
 
-    it('should response 401 when not using accessToken', async () => {
+    it('should response 401 when unauthorized', async () => {
       const app = await createServer(container);
       await UsersTableTestHelper.addUser({});
       await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
@@ -72,6 +72,7 @@ describe('/threads/:threadId/comments endpoint', () => {
     it('should response 404 when thread not found', async () => {
       const app = await createServer(container);
       const accessToken = await ServerTestHelper.getAccessToken({});
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
 
       const response = await request(app)
         .post('/threads/thread-234/comments')

@@ -1,13 +1,13 @@
 class ThreadRepository {
-  async addThread(newThread) {
+  async addThread(newThread) { // eslint-disable-line no-unused-vars
     throw new Error('THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async getThreadById(id) {
+  async getThreadById(id) { // eslint-disable-line no-unused-vars
     throw new Error('THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async verifyThreadExists(id) {
+  async verifyThreadExists(id) { // eslint-disable-line no-unused-vars
     throw new Error('THREAD_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 }

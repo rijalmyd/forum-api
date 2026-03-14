@@ -4,7 +4,7 @@
  * @returns {Promise<void> | void}
  */
 export const up = (pgm) => {
-  pgm.createTable('comments', {
+  pgm.createTable('replies', {
     id: {
       type: 'VARCHAR(50)',
       primaryKey: true,
@@ -18,10 +18,10 @@ export const up = (pgm) => {
       notNull: true,
       default: pgm.func('CURRENT_TIMESTAMP'),
     },
-    thread_id: { // eslint-disable-line camelcase
+    comment_id: { // eslint-disable-line camelcase
       type: 'VARCHAR(50)',
       notNull: true,
-      references: 'threads(id)',
+      references: 'comments(id)',
       onDelete: 'CASCADE',
     },
     owner: {
@@ -34,7 +34,7 @@ export const up = (pgm) => {
       type: 'BOOLEAN',
       notNull: true,
       default: false,
-    },
+    }
   });
 };
 
@@ -44,5 +44,5 @@ export const up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 export const down = (pgm) => {
-  pgm.dropTable('comments');
+  pgm.dropTable('replies');
 };

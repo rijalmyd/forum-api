@@ -1,21 +1,21 @@
 class CommentRepository {
-  async addComment(newComment) {
+  async addComment(newComment) { // eslint-disable-line no-unused-vars
     throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async verifyCommentOwner(commentId, userId) {
+  async verifyCommentOwner(commentId, userId) { // eslint-disable-line no-unused-vars
     throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async verifyCommentId(commentId, threadId) {
+  async verifyCommentId(commentId, threadId) { // eslint-disable-line no-unused-vars
     throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async deleteCommentById(commentId) {
+  async deleteCommentById(commentId) { // eslint-disable-line no-unused-vars
     throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async getCommentsByThreadId(threadId) {
+  async getCommentsByThreadId(threadId) { // eslint-disable-line no-unused-vars
     throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 }

@@ -15,6 +15,7 @@ describe('/authentications endpoint', () => {
     await UsersTableTestHelper.cleanTable();
     await AuthenticationsTableTestHelper.cleanTable();
   });
+
   describe('when POST /authentications', () => {
     it('should response 201 and new authentication', async () => {
       const requestPayload = {

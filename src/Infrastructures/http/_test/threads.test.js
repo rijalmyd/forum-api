@@ -109,8 +109,6 @@ describe('/threads endpoint', () => {
       const response = await request(app)
         .get('/threads/thread-123');
 
-      console.log(response.body);
-
       expect(response.status).toEqual(200);
       expect(response.body.data.thread.id).toEqual('thread-123');
       expect(response.body.data.thread.username).toEqual('dicoding');
@@ -133,8 +131,6 @@ describe('/threads endpoint', () => {
 
       const response = await request(app)
         .get('/threads/thread-123');
-
-      console.log(response.body);
 
       expect(response.status).toEqual(200);
       expect(response.body.data.thread.id).toEqual('thread-123');

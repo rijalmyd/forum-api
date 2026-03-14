@@ -8,9 +8,9 @@ describe('AddCommentUseCase', () => {
   it('should orchestrating the add comment action correctly', async () => {
     const useCasePayload = {
       content: 'sebuah komentar',
+      threadId: 'thread-123',
+      owner: 'user-123',
     };
-    const owner = 'user-123';
-    const threadId = 'thread-123';
     const mockAddedComment = new AddedComment({
       id: 'comment-123',
       content: 'sebuah komentar',
@@ -29,7 +29,7 @@ describe('AddCommentUseCase', () => {
       threadRepository: mockThreadRepository,
     });
 
-    const actualResult = await addCommentUseCase.execute(useCasePayload, threadId, owner);
+    const actualResult = await addCommentUseCase.execute(useCasePayload);
 
     expect(mockCommentRepository.addComment).toBeCalledTimes(1);
     expect(mockThreadRepository.verifyThreadExists).toBeCalledTimes(1);
@@ -38,7 +38,7 @@ describe('AddCommentUseCase', () => {
       threadId: 'thread-123',
       owner: 'user-123'
     }));
-    expect(mockThreadRepository.verifyThreadExists).toHaveBeenCalledWith(threadId);
+    expect(mockThreadRepository.verifyThreadExists).toHaveBeenCalledWith(useCasePayload.threadId);
     expect(actualResult).toEqual(new AddedComment({
       id: 'comment-123',
       content: 'sebuah komentar',
