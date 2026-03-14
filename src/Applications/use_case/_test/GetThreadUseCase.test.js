@@ -3,6 +3,8 @@ import CommentRepository from '../../../Domains/comments/CommentRepository.js';
 import ThreadRepository from '../../../Domains/threads/ThreadRepository.js';
 import DetailComment from '../../../Domains/comments/entities/DetailComment.js';
 import GetThreadUseCase from '../GetThreadUseCase.js';
+import ReplyRepository from '../../../Domains/replies/ReplyRepository.js';
+import DetailReply from '../../../Domains/replies/entities/DetailReply.js';
 
 describe('GetThreadUseCase', () => {
   it('should orchestrating the get detail thread action correctly', async () => {
@@ -11,6 +13,7 @@ describe('GetThreadUseCase', () => {
     };
     const mockCommentRepository = new CommentRepository();
     const mockThreadRepository = new ThreadRepository();
+    const mockReplyRepository = new ReplyRepository();
 
     mockThreadRepository.getThreadById = vi.fn()
       .mockImplementation(() => Promise.resolve({
@@ -20,6 +23,17 @@ describe('GetThreadUseCase', () => {
         date: '2026-03-14T16:10:20.555Z',
         username: 'dicoding',
       }));
+    mockReplyRepository.getRepliesByCommentIds = vi.fn()
+      .mockImplementation(() => Promise.resolve([
+        new DetailReply({
+          id: 'reply-1',
+          commentId: 'comment-2',
+          content: 'balasan 1',
+          date: '2026-03-14T07:59:48.555Z',
+          username: 'alex',
+          isDelete: true,
+        }),
+      ]));
     mockThreadRepository.verifyThreadExists = vi.fn()
       .mockImplementation(() => Promise.resolve());
     mockCommentRepository.getCommentsByThreadId = vi.fn()
@@ -42,10 +56,12 @@ describe('GetThreadUseCase', () => {
     const getThreadUseCase = new GetThreadUseCase({
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
+      replyRepository: mockReplyRepository,
     });
 
     const thread = await getThreadUseCase.execute(useCasePayload);
 
+    expect(mockReplyRepository.getRepliesByCommentIds).toHaveBeenCalledWith(['comment-1', 'comment-2']);
     expect(mockThreadRepository.getThreadById).toHaveBeenCalledWith(useCasePayload.threadId);
     expect(mockThreadRepository.verifyThreadExists).toHaveBeenCalledWith(useCasePayload.threadId);
     expect(mockCommentRepository.getCommentsByThreadId).toHaveBeenCalledWith(useCasePayload.threadId);

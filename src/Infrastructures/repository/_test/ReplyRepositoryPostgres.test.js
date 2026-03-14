@@ -1,4 +1,4 @@
-import { expect } from 'vitest';
+import { describe, expect } from 'vitest';
 import CommentsTableTestHelper from '../../../../tests/CommentsTableTestHelper.js';
 import RepliesTableTestHelper from '../../../../tests/RepliesTableTestHelper.js';
 import ThreadsTableTestHelper from '../../../../tests/ThreadsTableTestHelper.js';
@@ -7,6 +7,8 @@ import NewReply from '../../../Domains/replies/entities/NewReply.js';
 import pool from '../../database/postgres/pool.js';
 import ReplyRepositoryPostgres from '../ReplyRepositoryPostgres.js';
 import AddedReply from '../../../Domains/replies/entities/AddedReply.js';
+import NotFoundError from '../../../Commons/exceptions/NotFoundError.js';
+import AuthorizationError from '../../../Commons/exceptions/AuthorizationError.js';
 
 describe('ReplyRepositoryPostgres', () => {
   beforeEach(async () => {
@@ -67,6 +69,50 @@ describe('ReplyRepositoryPostgres', () => {
         content: 'sebuah balasan',
         owner: 'user-123'
       }));
+    });
+  });
+
+  describe('verifyReplyId function', async () => {
+    it('should throw NotFoundError when reply not available', async () => {
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+      await expect(replyRepositoryPostgres.verifyReplyId('reply-123', 'comment-123'))
+        .rejects.toThrowError(NotFoundError);
+    });
+  });
+
+  describe('verifyReplyOwner function', () => {
+    it('should response NotFoundError when reply not available', async () => {
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+      await expect(replyRepositoryPostgres.verifyReplyOwner('reply-123', 'comment-123'))
+        .rejects.toThrowError(NotFoundError);
+    });
+
+    it('should throw AuthorizationError when user is not owner', async () => {
+      await RepliesTableTestHelper.addReply({
+        id: 'reply-123',
+        threadId: 'thread-123',
+        owner: 'user-123',
+      });
+
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+      await expect(replyRepositoryPostgres.verifyReplyOwner('reply-123', 'user-000'))
+        .rejects.toThrowError(AuthorizationError);
+    });
+
+    it('should not throw AuthorizationError when user is owner', async () => {
+      await RepliesTableTestHelper.addReply({
+        id: 'reply-123',
+        threadId: 'thread-123',
+        owner: 'user-000',
+      });
+
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
+
+      await expect(replyRepositoryPostgres.verifyReplyOwner('reply-123', 'user-000'))
+        .resolves.not.toThrowError(AuthorizationError);
     });
   });
 });
