@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node src/app.js",
     "start:dev": "nodemon src/app.js",
-    "test": "vitest --run --maxWorkers=1 --file-parallelism=false",
+    "test": "vitest --run",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage",
     "migrate": "node-pg-migrate",

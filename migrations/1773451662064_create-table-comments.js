@@ -4,16 +4,12 @@
  * @returns {Promise<void> | void}
  */
 export const up = (pgm) => {
-  pgm.createTable('threads', {
+  pgm.createTable('comments', {
     id: {
       type: 'VARCHAR(50)',
       primaryKey: true,
     },
-    title: {
-      type: 'TEXT',
-      notNull: true,
-    },
-    body: {
+    content: {
       type: 'TEXT',
       notNull: true,
     },
@@ -22,11 +18,22 @@ export const up = (pgm) => {
       notNull: true,
       default: pgm.func('CURRENT_TIMESTAMP'),
     },
+    thread_id: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+      references: 'threads(id)',
+      onDelete: 'CASCADE',
+    },
     owner: {
       type: 'VARCHAR(50)',
       notNull: true,
       references: 'users(id)',
-      onDelete: 'CASCADE'
+      onDelete: 'CASCADE',
+    },
+    is_delete: {
+      type: 'BOOLEAN',
+      notNull: true,
+      default: false,
     },
   });
 };
@@ -37,5 +44,5 @@ export const up = (pgm) => {
  * @returns {Promise<void> | void}
  */
 export const down = (pgm) => {
-  pgm.dropTable('threads');
+  pgm.dropTable('comments');
 };

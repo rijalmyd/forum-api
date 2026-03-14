@@ -26,6 +26,10 @@ import RefreshAuthenticationUseCase from '../Applications/use_case/RefreshAuthen
 import ThreadRepository from '../Domains/threads/ThreadRepository.js';
 import ThreadRepositoryPostgres from './repository/ThreadRepositoryPostgres.js';
 import AddThreadUseCase from '../Applications/use_case/AddThreadUseCase.js';
+import AddCommentUseCase from '../Applications/use_case/AddCommentUseCase.js';
+import CommentRepository from '../Domains/comments/CommentRepository.js';
+import CommentRepositoryPostgres from './repository/CommentRepositoryPostgres.js';
+import DeleteCommentUseCase from '../Applications/use_case/DeleteCommentUseCase.js';
 
 // creating container
 const container = createContainer();
@@ -67,9 +71,23 @@ container.register([
         },
         {
           concrete: nanoid
-        }
+        },
       ]
     },
+  },
+  {
+    key: CommentRepository.name,
+    Class: CommentRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool
+        },
+        {
+          concrete: nanoid
+        },
+      ]
+    }
   },
   {
     key: PasswordHash.name,
@@ -181,6 +199,40 @@ container.register([
         }
       ]
     }
+  },
+  {
+    key: AddCommentUseCase.name,
+    Class: AddCommentUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'commentRepository',
+          internal: CommentRepository.name,
+        },
+        {
+          name: 'threadRepository',
+          internal: ThreadRepository.name,
+        }
+      ]
+    }
+  },
+  {
+    key: DeleteCommentUseCase.name,
+    Class: DeleteCommentUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'threadRepository',
+          internal: ThreadRepository.name,
+        },
+        {
+          name: 'commentRepository',
+          internal: CommentRepository.name,
+        },
+      ],
+    },
   },
 ]);
 
