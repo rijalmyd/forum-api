@@ -12,9 +12,13 @@ class RepliesHandler {
       const addReplyUseCase = this._container.getInstance(AddReplyUseCase.name);
       const { threadId, commentId } = req.params;
       const { id: owner } = req.user;
-      const { content } = req.body;
+      const useCasePayload = {
+        ...req.body,
+        threadId,
+        commentId,
+      };
 
-      const addedReply = await addReplyUseCase.execute({ content, threadId, commentId, owner });
+      const addedReply = await addReplyUseCase.execute(useCasePayload, owner);
 
       res.status(201).json({
         status: 'success',

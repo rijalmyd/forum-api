@@ -8,8 +8,8 @@ describe('DeleteCommentUseCase', () => {
     const useCasePayload = {
       threadId: 'thread-123',
       commentId: 'comment-123',
-      userId: 'user-123',
     };
+    const userId = 'user-123';
     const mockCommentRepository = new CommentRepository();
     const mockThreadRepository = new ThreadRepository();
 
@@ -27,7 +27,7 @@ describe('DeleteCommentUseCase', () => {
       threadRepository: mockThreadRepository,
     });
 
-    await deleteCommentUseCase.execute(useCasePayload);
+    await deleteCommentUseCase.execute(useCasePayload, userId);
 
     expect(mockCommentRepository.verifyCommentOwner)
       .toHaveBeenCalledWith('comment-123', 'user-123');

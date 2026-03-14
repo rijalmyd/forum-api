@@ -9,9 +9,9 @@ describe('AddReplyUseCase', () => {
     const useCasePayload = {
       content: 'sebuah balasan',
       commentId: 'comment-123',
-      owner: 'user-123',
-      threadId: 'thread-123'
+      threadId: 'thread-123',
     };
+    const owner = 'user-123';
     const mockAddedReply = new AddedReply({
       id: 'reply-123',
       content: 'sebuah balasan',
@@ -30,7 +30,7 @@ describe('AddReplyUseCase', () => {
       replyRepository: mockReplyRepository,
     });
 
-    const addedReply = await addReplyUseCase.execute(useCasePayload);
+    const addedReply = await addReplyUseCase.execute(useCasePayload, owner);
 
     expect(mockCommentRepository.verifyCommentId).toBeCalledTimes(1);
     expect(mockCommentRepository.verifyCommentId).toHaveBeenCalledWith(useCasePayload.commentId, useCasePayload.threadId);
