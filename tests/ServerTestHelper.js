@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import config from '../src/Commons/config.js';
 import AuthenticationsTableTestHelper from './AuthenticationsTableTestHelper.js';
 import UsersTableTestHelper from './UsersTableTestHelper.js';

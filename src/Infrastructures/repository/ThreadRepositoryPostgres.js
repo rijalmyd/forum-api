@@ -1,5 +1,6 @@
 import NotFoundError from '../../Commons/exceptions/NotFoundError.js';
 import AddedThread from '../../Domains/threads/entities/AddedThread.js';
+import DetailThread from '../../Domains/threads/entities/DetailThread.js';
 import ThreadRepository from '../../Domains/threads/ThreadRepository.js';
 
 class ThreadRepositoryPostgres extends ThreadRepository {
@@ -52,13 +53,13 @@ class ThreadRepositoryPostgres extends ThreadRepository {
     }
 
     const row = result.rows[0];
-    return {
+    return new DetailThread({
       id: row.id,
       title: row.title,
       body: row.body,
       date: new Date(row.date).toISOString(),
       username: row.username,
-    };
+    });
   }
 }
 
