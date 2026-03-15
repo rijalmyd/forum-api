@@ -17,10 +17,15 @@ describe('AddReplyUseCase', () => {
       content: 'sebuah balasan',
       owner: 'user-123'
     });
+    const expectedAddedReply = new AddedReply({
+      id: 'reply-123',
+      content: 'sebuah balasan',
+      owner: 'user-123'
+    });
     const mockCommentRepository = new CommentRepository();
     const mockReplyRepository = new ReplyRepository();
 
-    mockCommentRepository.verifyCommentId = vi.fn()
+    mockCommentRepository.verifyCommentExistsOnThread = vi.fn()
       .mockImplementation(() => Promise.resolve());
     mockReplyRepository.addReply = vi.fn()
       .mockImplementation(() => Promise.resolve(mockAddedReply));
@@ -32,8 +37,8 @@ describe('AddReplyUseCase', () => {
 
     const addedReply = await addReplyUseCase.execute(useCasePayload, owner);
 
-    expect(mockCommentRepository.verifyCommentId).toBeCalledTimes(1);
-    expect(mockCommentRepository.verifyCommentId).toHaveBeenCalledWith(useCasePayload.commentId, useCasePayload.threadId);
+    expect(mockCommentRepository.verifyCommentExistsOnThread).toBeCalledTimes(1);
+    expect(mockCommentRepository.verifyCommentExistsOnThread).toHaveBeenCalledWith(useCasePayload.commentId, useCasePayload.threadId);
     expect(mockReplyRepository.addReply).toBeCalledTimes(1);
     expect(mockReplyRepository.addReply).toHaveBeenCalledWith(new NewReply({
       content: 'sebuah balasan',
@@ -41,10 +46,6 @@ describe('AddReplyUseCase', () => {
       owner: 'user-123',
       threadId: 'thread-123'
     }));
-    expect(addedReply).toStrictEqual(new AddedReply({
-      id: 'reply-123',
-      content: 'sebuah balasan',
-      owner: 'user-123'
-    }));
+    expect(addedReply).toStrictEqual(expectedAddedReply);
   });
 });

@@ -8,7 +8,8 @@ class DetailReply {
     this.username = username;
     this.date = date;
     this.commentId = commentId;
-    this.content = isDelete ? '**balasan telah dihapus**' : content;
+    this.content = content;
+    this.isDelete = isDelete;
   }
 
   _verifyPayload(payload) {

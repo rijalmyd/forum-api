@@ -7,7 +7,7 @@ class CommentRepository {
     throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async verifyCommentId(commentId, threadId) { // eslint-disable-line no-unused-vars
+  async verifyCommentExistsOnThread(commentId, threadId) { // eslint-disable-line no-unused-vars
     throw new Error('COMMENT_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 

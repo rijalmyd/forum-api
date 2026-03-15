@@ -25,16 +25,18 @@ class GetThreadUseCase {
         content: reply.content,
         date: reply.date,
         username: reply.username,
+        isDelete: reply.isDelete,
       });
       return acc;
     }, {});
 
     const mappedComments = comments.map((comment) => ({
-      id: comment.id,
-      username: comment.username,
-      date: comment.date,
-      content: comment.content,
-      replies: repliesByCommentId[comment.id] || [],
+      ...comment,
+      content: comment.isDelete ? '**komentar telah dihapus**' : comment.content,
+      replies: (repliesByCommentId[comment.id] || []).map((reply) => ({
+        ...reply,
+        content: reply.isDelete ? '**balasan telah dihapus**' : reply.content,
+      })),
     }));
 
     return {

@@ -16,6 +16,10 @@ describe('GetAuthenticationUseCase', () => {
       accessToken: 'access_token',
       refreshToken: 'refresh_token',
     });
+    const expectedAuthentication = new NewAuth({
+      accessToken: 'access_token',
+      refreshToken: 'refresh_token',
+    });
     const mockUserRepository = new UserRepository();
     const mockAuthenticationRepository = new AuthenticationRepository();
     const mockAuthenticationTokenManager = new AuthenticationTokenManager();
@@ -47,10 +51,7 @@ describe('GetAuthenticationUseCase', () => {
     const actualAuthentication = await loginUserUseCase.execute(useCasePayload);
 
     // Assert
-    expect(actualAuthentication).toEqual(new NewAuth({
-      accessToken: 'access_token',
-      refreshToken: 'refresh_token',
-    }));
+    expect(actualAuthentication).toEqual(expectedAuthentication);
     expect(mockUserRepository.getPasswordByUsername)
       .toBeCalledWith('dicoding');
     expect(mockPasswordHash.comparePassword)

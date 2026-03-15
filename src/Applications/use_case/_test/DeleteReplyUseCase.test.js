@@ -17,9 +17,9 @@ describe('DeleteReplyUseCase', () => {
 
     mockReplyRepository.verifyReplyOwner = vi.fn()
       .mockImplementation(() => Promise.resolve());
-    mockReplyRepository.verifyReplyId = vi.fn()
+    mockReplyRepository.verifyReplyExistsOnComment = vi.fn()
       .mockImplementation(() => Promise.resolve());
-    mockCommentRepository.verifyCommentId = vi.fn()
+    mockCommentRepository.verifyCommentExistsOnThread = vi.fn()
       .mockImplementation(() => Promise.resolve());
     mockThreadRepository.verifyThreadExists = vi.fn()
       .mockImplementation(() => Promise.resolve());
@@ -36,9 +36,9 @@ describe('DeleteReplyUseCase', () => {
 
     expect(mockReplyRepository.verifyReplyOwner)
       .toHaveBeenCalledWith('reply-123', 'user-123');
-    expect(mockReplyRepository.verifyReplyId)
+    expect(mockReplyRepository.verifyReplyExistsOnComment)
       .toHaveBeenCalledWith('reply-123', 'comment-123');
-    expect(mockCommentRepository.verifyCommentId)
+    expect(mockCommentRepository.verifyCommentExistsOnThread)
       .toHaveBeenCalledWith('comment-123', 'thread-123');
     expect(mockThreadRepository.verifyThreadExists)
       .toHaveBeenCalledWith('thread-123');

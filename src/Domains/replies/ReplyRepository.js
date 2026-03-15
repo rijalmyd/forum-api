@@ -3,7 +3,7 @@ class ReplyRepository {
     throw new Error('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async verifyReplyId(replyId, commentId) { // eslint-disable-line no-unused-vars
+  async verifyReplyExistsOnComment(replyId, commentId) { // eslint-disable-line no-unused-vars
     throw new Error('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 

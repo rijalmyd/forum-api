@@ -109,7 +109,7 @@ describe('a DetailReply entities', () => {
     });
   });
 
-  it('should create DetailReply object correctly when not deleted', () => {
+  it('should create DetailReply object correctly', () => {
     const payload = {
       id: 'reply-123',
       username: 'dicoding',
@@ -119,31 +119,13 @@ describe('a DetailReply entities', () => {
       isDelete: false,
     };
 
-    const { id, username, date, content, commentId } = new DetailReply(payload);
+    const { id, username, date, content, isDelete, commentId } = new DetailReply(payload);
 
     expect(id).toEqual(payload.id);
     expect(username).toEqual(payload.username);
     expect(date).toEqual(payload.date);
     expect(content).toEqual(payload.content);
     expect(commentId).toEqual(payload.commentId);
-  });
-
-  it('should create DetailReply object correctly when deleted', () => {
-    const payload = {
-      id: 'reply-123',
-      username: 'dicoding',
-      date: '2026-03-13T20:33:44.555Z',
-      content: 'sebuah reply',
-      commentId: 'comment-123',
-      isDelete: true,
-    };
-
-    const { id, username, date, content, commentId } = new DetailReply(payload);
-
-    expect(id).toEqual(payload.id);
-    expect(username).toEqual(payload.username);
-    expect(date).toEqual(payload.date);
-    expect(content).toEqual('**balasan telah dihapus**');
-    expect(commentId).toEqual(payload.commentId);
+    expect(isDelete).toEqual(payload.isDelete);
   });
 });

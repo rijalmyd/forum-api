@@ -78,11 +78,11 @@ describe('CommentRepositoryPostgres', () => {
     });
   });
 
-  describe('verifyCommentId function', async () => {
+  describe('verifyCommentExistsOnThread function', async () => {
     it('should throw NotFoundError when comment not available', async () => {
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
-      await expect(commentRepositoryPostgres.verifyCommentId('comment-123', 'thread-123'))
+      await expect(commentRepositoryPostgres.verifyCommentExistsOnThread('comment-123', 'thread-123'))
         .rejects.toThrowError(NotFoundError);
     });
 
@@ -100,7 +100,7 @@ describe('CommentRepositoryPostgres', () => {
 
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
-      await expect(commentRepositoryPostgres.verifyCommentId('comment-123', 'thread-123'))
+      await expect(commentRepositoryPostgres.verifyCommentExistsOnThread('comment-123', 'thread-123'))
         .rejects.toThrowError(NotFoundError);
     });
 
@@ -116,7 +116,7 @@ describe('CommentRepositoryPostgres', () => {
       });
       const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {});
 
-      await expect(commentRepositoryPostgres.verifyCommentId('comment-123', 'thread-123'))
+      await expect(commentRepositoryPostgres.verifyCommentExistsOnThread('comment-123', 'thread-123'))
         .resolves.not.toThrowError(NotFoundError);
     });
   });
@@ -186,7 +186,7 @@ describe('CommentRepositoryPostgres', () => {
       expect(comments).toHaveLength(2);
       expect(comments[0].id).toEqual('comment-1');
       expect(comments[0].username).toEqual('dicoding');
-      expect(comments[0].content).toEqual('**komentar telah dihapus**');
+      expect(comments[0].content).toEqual('komentar 1');
       expect(comments[0].date).toEqual('2026-03-14T16:39:20.555Z');
       expect(comments[1].id).toEqual('comment-2');
       expect(comments[1].username).toEqual('alex');

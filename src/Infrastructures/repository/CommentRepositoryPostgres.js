@@ -37,7 +37,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     await this._pool.query(query);
   }
 
-  async verifyCommentId(commentId, threadId) {
+  async verifyCommentExistsOnThread(commentId, threadId) {
     const query = {
       text: 'SELECT * FROM comments WHERE id = $1 AND thread_id = $2',
       values: [commentId, threadId]

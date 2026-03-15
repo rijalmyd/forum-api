@@ -97,7 +97,7 @@ describe('a DetailComment entities', () => {
     });
   });
 
-  it('should create DetailComment object correctly when not deleted', () => {
+  it('should create DetailComment object correctly', () => {
     const payload = {
       id: 'comment-123',
       username: 'dicoding',
@@ -107,31 +107,13 @@ describe('a DetailComment entities', () => {
       replies: [],
     };
 
-    const { id, username, date, content, replies } = new DetailComment(payload);
+    const { id, username, date, content, isDelete, replies } = new DetailComment(payload);
 
     expect(id).toEqual(payload.id);
     expect(username).toEqual(payload.username);
     expect(date).toEqual(payload.date);
     expect(content).toEqual(payload.content);
-    expect(replies).toEqual(payload.replies);
-  });
-
-  it('should create DetailComment object correctly when deleted', () => {
-    const payload = {
-      id: 'comment-123',
-      username: 'dicoding',
-      date: '2026-03-13T20:33:44.555Z',
-      content: 'sebuah comment',
-      isDelete: true,
-      replies: [],
-    };
-
-    const { id, username, date, content, replies } = new DetailComment(payload);
-
-    expect(id).toEqual(payload.id);
-    expect(username).toEqual(payload.username);
-    expect(date).toEqual(payload.date);
-    expect(content).toEqual('**komentar telah dihapus**');
+    expect(isDelete).toEqual(payload.isDelete);
     expect(replies).toEqual(payload.replies);
   });
 });

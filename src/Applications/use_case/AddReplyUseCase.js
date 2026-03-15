@@ -10,7 +10,7 @@ class AddReplyUseCase {
     const { threadId, commentId } = useCasePayload;
     const newReply = new NewReply({ ...useCasePayload, owner });
 
-    await this._commentRepository.verifyCommentId(commentId, threadId);
+    await this._commentRepository.verifyCommentExistsOnThread(commentId, threadId);
 
     return this._replyRepository.addReply(newReply);
   }

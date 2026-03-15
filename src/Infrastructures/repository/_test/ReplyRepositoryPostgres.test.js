@@ -8,7 +8,6 @@ import ReplyRepositoryPostgres from '../ReplyRepositoryPostgres.js';
 import AddedReply from '../../../Domains/replies/entities/AddedReply.js';
 import NotFoundError from '../../../Commons/exceptions/NotFoundError.js';
 import AuthorizationError from '../../../Commons/exceptions/AuthorizationError.js';
-import { describe } from 'vitest';
 
 describe('ReplyRepositoryPostgres', () => {
   beforeEach(async () => {
@@ -89,11 +88,11 @@ describe('ReplyRepositoryPostgres', () => {
     });
   });
 
-  describe('verifyReplyId function', async () => {
+  describe('verifyReplyExistsOnComment function', async () => {
     it('should throw NotFoundError when reply not available', async () => {
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
-      await expect(replyRepositoryPostgres.verifyReplyId('reply-123', 'comment-123'))
+      await expect(replyRepositoryPostgres.verifyReplyExistsOnComment('reply-123', 'comment-123'))
         .rejects.toThrowError(NotFoundError);
     });
 
@@ -105,7 +104,7 @@ describe('ReplyRepositoryPostgres', () => {
       });
       const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {});
 
-      await expect(replyRepositoryPostgres.verifyReplyId('reply-123', 'comment-123'))
+      await expect(replyRepositoryPostgres.verifyReplyExistsOnComment('reply-123', 'comment-123'))
         .rejects.toThrowError(NotFoundError);
     });
   });
