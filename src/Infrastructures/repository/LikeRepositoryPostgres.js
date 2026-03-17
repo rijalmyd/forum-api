@@ -22,7 +22,7 @@ class LikeRepositoryPostgres extends LikeRepository {
 
   async unlikeComment(commentId, userId) {
     const query = {
-      text: 'DELETE FROM comment_likes WHERE comment_id = $1 AND comment_id = $2',
+      text: 'DELETE FROM comment_likes WHERE comment_id = $1 AND user_id = $2',
       values: [commentId, userId]
     };
 
