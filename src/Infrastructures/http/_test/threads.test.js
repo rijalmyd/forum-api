@@ -7,6 +7,7 @@ import createServer from '../createServer.js';
 import request from 'supertest';
 import ServerTestHelper from '../../../../tests/ServerTestHelper.js';
 import CommentsTableTestHelper from '../../../../tests/CommentsTableTestHelper.js';
+import CommentLikesTableTestHelper from '../../../../tests/CommentLikesTableTestHelper.js';
 
 describe('/threads endpoint', () => {
   afterAll(async () => {
@@ -14,6 +15,8 @@ describe('/threads endpoint', () => {
   });
 
   afterEach(async () => {
+    await CommentLikesTableTestHelper.cleanTable();
+    await CommentsTableTestHelper.cleanTable();
     await UsersTableTestHelper.cleanTable();
     await ThreadsTableTestHelper.cleanTable();
     await AuthenticationsTableTestHelper.cleanTable();
@@ -142,6 +145,68 @@ describe('/threads endpoint', () => {
       expect(response.body.data.thread.comments[1].id).toEqual('comment-234');
       expect(response.body.data.thread.comments[1].username).toEqual('commentator');
       expect(response.body.data.thread.comments[1].content).toEqual('**komentar telah dihapus**');
+    });
+
+    it('should response 200, return corrent likeCount after likes comment', async () => {
+      const app = await createServer(container);
+
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: 'dicoding' });
+      await UsersTableTestHelper.addUser({ id: 'user-000', username: 'commentator' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', owner: 'user-123' });
+      await CommentLikesTableTestHelper.addLikeComment({ userId: 'user-000', commentId: 'comment-123' });
+
+      const response = await request(app)
+        .get('/threads/thread-123');
+
+      expect(response.status).toEqual(200);
+      expect(response.body.data.thread.id).toEqual('thread-123');
+      expect(response.body.data.thread.username).toEqual('dicoding');
+      expect(response.body.data.thread.comments).toHaveLength(1);
+      expect(response.body.data.thread.comments[0].likeCount).toEqual(1);
+    });
+
+    it('should response 200, return corrent likeCount after unlikes comment', async () => {
+      const app = await createServer(container);
+
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: 'dicoding' });
+      await UsersTableTestHelper.addUser({ id: 'user-000', username: 'commentator' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123', owner: 'user-123' });
+      await CommentLikesTableTestHelper.addLikeComment({ userId: 'user-000', commentId: 'comment-123' });
+      await CommentLikesTableTestHelper.deleteLikedComment({ userId: 'user-000', commentId: 'comment-123' });
+
+      const response = await request(app)
+        .get('/threads/thread-123');
+
+      expect(response.status).toEqual(200);
+      expect(response.body.data.thread.id).toEqual('thread-123');
+      expect(response.body.data.thread.username).toEqual('dicoding');
+      expect(response.body.data.thread.comments).toHaveLength(1);
+      expect(response.body.data.thread.comments[0].likeCount).toEqual(0);
+    });
+
+    it('should response 200 and return correct likeCount for multiple comments', async () => {
+      const app = await createServer(container);
+
+      await UsersTableTestHelper.addUser({ id: 'user-123', username: 'dicoding' });
+      await UsersTableTestHelper.addUser({ id: 'user-000', username: 'commentator' });
+      await ThreadsTableTestHelper.addThread({ id: 'thread-123', owner: 'user-123' });
+
+      // Comment 123: 2 likes
+      await CommentsTableTestHelper.addComment({ id: 'comment-123', threadId: 'thread-123' });
+      await CommentLikesTableTestHelper.addLikeComment({ id: 'like-1', userId: 'user-123', commentId: 'comment-123' });
+      await CommentLikesTableTestHelper.addLikeComment({ id: 'like-2', userId: 'user-000', commentId: 'comment-123' });
+
+      // Comment 234: 0 likes
+      await CommentsTableTestHelper.addComment({ id: 'comment-234', threadId: 'thread-123' });
+
+      const response = await request(app)
+        .get('/threads/thread-123');
+
+      expect(response.status).toEqual(200);
+      expect(response.body.data.thread.comments[0].likeCount).toEqual(2);
+      expect(response.body.data.thread.comments[1].likeCount).toEqual(0);
     });
   });
 });

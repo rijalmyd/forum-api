@@ -95,7 +95,7 @@ describe('/threads/:threadId/comments/:commentId/replies endpoint', () => {
       expect(response.body.message).toBeDefined();
     });
 
-    it('should response 404 when comment not found', async () => {
+    it('should response 404 when comment not found in thread', async () => {
       const app = await createServer(container);
       const accessToken = await ServerTestHelper.getAccessToken({});
       await UsersTableTestHelper.addUser({ id: 'user-000', username: 'commentator' });
