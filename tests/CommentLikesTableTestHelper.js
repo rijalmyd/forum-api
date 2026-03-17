@@ -1,7 +1,8 @@
+/* istanbul ignore file */
 import pool from '../src/Infrastructures/database/postgres/pool.js';
 
 const CommentLikesTableTestHelper = {
-  async likeComment({
+  async addLikeComment({
     id = 'like-123',
     commentId = 'comment-123',
     userId = 'user-123',
@@ -12,6 +13,21 @@ const CommentLikesTableTestHelper = {
         INSERT INTO comment_likes VALUES($1, $2, $3, $4)
       `,
       values: [id, commentId, userId, date]
+    };
+
+    await pool.query(query);
+  },
+
+  async deleteLikedComment({
+    commentId = 'comment-123',
+    userId = 'user-123'
+  }) {
+    const query = {
+      text: `
+        DELETE FROM comment_likes
+        WHERE comment_id = $1 AND user_id = $2
+      `,
+      values: [commentId, userId]
     };
 
     await pool.query(query);

@@ -1,17 +1,17 @@
 class LikeRepository {
-  async likeComment(commentId, userId) {
+  async addLikeComment(commentId, userId) { // eslint-disable-line no-unused-vars
     throw new Error('LIKE_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async unlikeComment(commentId, userId) {
+  async deleteLikedComment(commentId, userId) { // eslint-disable-line no-unused-vars
     throw new Error('LIKE_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async isLikedComment(commentId, userId) {
+  async isLikedComment(commentId, userId) { // eslint-disable-line no-unused-vars
     throw new Error('LIKE_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async getLikeCountByCommentIds(commentIds) {
+  async getLikeCountsByCommentIds(commentIds) { // eslint-disable-line no-unused-vars
     throw new Error('LIKE_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 }

@@ -9,13 +9,13 @@ export const up = (pgm) => {
       type: 'VARCHAR(50)',
       primaryKey: true,
     },
-    comment_id: {
+    comment_id: { // eslint-disable-line camelcase
       type: 'VARCHAR(50)',
       notNull: true,
       references: 'comments(id)',
       onDelete: 'CASCADE',
     },
-    user_id: {
+    user_id: { // eslint-disable-line camelcase
       type: 'VARCHAR(50)',
       notNull: true,
       references: 'users(id)',
@@ -26,7 +26,11 @@ export const up = (pgm) => {
       notNull: true,
       default: pgm.func('CURRENT_TIMESTAMP'),
     },
-  })
+  });
+
+  pgm.addConstraint('comment_likes', 'unique_comment_id_and_user_id', {
+    unique: ['comment_id', 'user_id']
+  });
 };
 
 /**

@@ -1,4 +1,3 @@
-import { describe, expect, vi } from 'vitest';
 import ThreadRepository from '../../../Domains/threads/ThreadRepository.js';
 import CommentRepository from '../../../Domains/comments/CommentRepository.js';
 import LikeRepository from '../../../Domains/likes/LikeRepository.js';
@@ -21,9 +20,9 @@ describe('LikeCommentUseCase', () => {
       .mockImplementation(() => Promise.resolve());
     mockLikeRepository.isLikedComment = vi.fn()
       .mockImplementation(() => Promise.resolve(false));
-    mockLikeRepository.likeComment = vi.fn()
+    mockLikeRepository.addLikeComment = vi.fn()
       .mockImplementation(() => Promise.resolve());
-    mockLikeRepository.unlikeComment = vi.fn()
+    mockLikeRepository.deleteLikedComment = vi.fn()
       .mockImplementation(() => Promise.resolve());
 
     const likeCommentUseCase = new LikeCommentUseCase({
@@ -37,8 +36,8 @@ describe('LikeCommentUseCase', () => {
     expect(mockThreadRepository.verifyThreadExists).toHaveBeenCalledWith(useCasePayload.threadId);
     expect(mockCommentRepository.verifyCommentExistsOnThread).toHaveBeenCalledWith(useCasePayload.commentId, useCasePayload.threadId);
     expect(mockLikeRepository.isLikedComment).toHaveBeenCalledWith(useCasePayload.commentId, userId);
-    expect(mockLikeRepository.likeComment).toHaveBeenCalledExactlyOnceWith(useCasePayload.commentId, userId);
-    expect(mockLikeRepository.unlikeComment).not.toHaveBeenCalled();
+    expect(mockLikeRepository.addLikeComment).toHaveBeenCalledExactlyOnceWith(useCasePayload.commentId, userId);
+    expect(mockLikeRepository.deleteLikedComment).not.toHaveBeenCalled();
   });
 
   it('should orchestrating unlike comment action properly', async () => {
@@ -57,9 +56,9 @@ describe('LikeCommentUseCase', () => {
       .mockImplementation(() => Promise.resolve());
     mockLikeRepository.isLikedComment = vi.fn()
       .mockImplementation(() => Promise.resolve(true));
-    mockLikeRepository.unlikeComment = vi.fn()
+    mockLikeRepository.deleteLikedComment = vi.fn()
       .mockImplementation(() => Promise.resolve());
-    mockLikeRepository.likeComment = vi.fn()
+    mockLikeRepository.addLikeComment = vi.fn()
       .mockImplementation(() => Promise.resolve());
 
     const likeCommentUseCase = new LikeCommentUseCase({
@@ -73,7 +72,7 @@ describe('LikeCommentUseCase', () => {
     expect(mockThreadRepository.verifyThreadExists).toHaveBeenCalledWith(useCasePayload.threadId);
     expect(mockCommentRepository.verifyCommentExistsOnThread).toHaveBeenCalledWith(useCasePayload.commentId, useCasePayload.threadId);
     expect(mockLikeRepository.isLikedComment).toHaveBeenCalledWith(useCasePayload.commentId, userId);
-    expect(mockLikeRepository.unlikeComment).toHaveBeenCalledExactlyOnceWith(useCasePayload.commentId, userId);
-    expect(mockLikeRepository.likeComment).not.toHaveBeenCalled();
+    expect(mockLikeRepository.deleteLikedComment).toHaveBeenCalledExactlyOnceWith(useCasePayload.commentId, userId);
+    expect(mockLikeRepository.addLikeComment).not.toHaveBeenCalled();
   });
 });

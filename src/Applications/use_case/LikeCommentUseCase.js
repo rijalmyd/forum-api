@@ -16,9 +16,9 @@ class LikeCommentUseCase {
 
     const isLiked = await this._likeRepository.isLikedComment(commentId, userId);
     if (isLiked) {
-      await this._likeRepository.unlikeComment(commentId, userId);
+      await this._likeRepository.deleteLikedComment(commentId, userId);
     } else {
-      await this._likeRepository.likeComment(commentId, userId);
+      await this._likeRepository.addLikeComment(commentId, userId);
     }
   }
 }

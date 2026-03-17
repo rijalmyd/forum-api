@@ -7,7 +7,7 @@ class LikeRepositoryPostgres extends LikeRepository {
     this._idGenerator = idGenerator;
   }
 
-  async likeComment(commentId, userId) {
+  async addLikeComment(commentId, userId) {
     const id = `like-${this._idGenerator()}`;
     const query = {
       text: `
@@ -20,13 +20,45 @@ class LikeRepositoryPostgres extends LikeRepository {
     await this._pool.query(query);
   }
 
-  async unlikeComment(commentId, userId) {
+  async deleteLikedComment(commentId, userId) {
     const query = {
       text: 'DELETE FROM comment_likes WHERE comment_id = $1 AND user_id = $2',
       values: [commentId, userId]
     };
 
     await this._pool.query(query);
+  }
+
+  async isLikedComment(commentId, userId) {
+    const query = {
+      text: `
+        SELECT EXISTS (
+          SELECT 1 FROM comment_likes 
+          WHERE comment_id = $1 AND user_id = $2
+        )
+      `,
+      values: [commentId, userId]
+    };
+
+    const result = await this._pool.query(query);
+    return result.rows[0].exists;
+  }
+
+  async getLikeCountsByCommentIds(commentIds) {
+    if (!commentIds.length) return {};
+
+    const query = {
+      text: `
+        SELECT comment_id, COUNT(*)::int
+        FROM comment_likes
+        WHERE comment_id = ANY($1)
+        GROUP BY comment_id
+      `,
+      values: [commentIds]
+    };
+
+    const result = await this._pool.query(query);
+    return Object.fromEntries(result.rows.map((row) => [row.comment_id, row.count]));
   }
 }
 
